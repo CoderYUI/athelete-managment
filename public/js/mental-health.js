@@ -146,6 +146,14 @@ function addMessage(type, content) {
     messageDiv.innerHTML = formattedContent;
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Remove quick replies after user selects one
+    if (type === 'user') {
+        const quickReplies = document.querySelector('.quick-replies');
+        if (quickReplies) {
+            quickReplies.remove();
+        }
+    }
 }
 
 // Format message with better styling
@@ -256,4 +264,22 @@ function processResponse(response, userMessage) {
     }
 
     return processedResponse;
+}
+
+// Add this function to handle quick replies
+window.handleQuickReply = async function(message) {
+    // Display user message
+    addMessage('user', message);
+
+    try {
+        const response = await getGeminiResponse(
+            `The athlete says: "${message}". 
+             Provide a brief, empathetic response and a specific action step.
+             Keep it under 3 sentences and focus on motivation and mental wellness.`
+        );
+        addMessage('bot', response);
+    } catch (error) {
+        console.error('Chat Error:', error);
+        addMessage('bot', 'I understand. Let\'s work together to improve your mindset and performance.');
+    }
 }

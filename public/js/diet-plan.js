@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Water tracking state
     let waterIntake = 0;
-    const DAILY_WATER_GOAL = 3000; // 3L in ml
+    const DAILY_WATER_GOAL = 4000; // 3L in ml
 
     // Add water tracking function to window scope
     window.updateWater = (amount) => {
