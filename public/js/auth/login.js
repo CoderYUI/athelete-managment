@@ -20,28 +20,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await signInWithPopup(auth, provider);
             
             if (result.user) {
-                // Check if user has completed Yo-Yo test
-                const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-                
-                if (userDoc.exists() && userDoc.data().lastYoyoTest) {
-                    // User has completed Yo-Yo test, go to dashboard
-                    window.location.href = '/pages/dashboard.html';
-                } else {
-                    // Check if initial assessment exists
-                    const assessmentDoc = await getDoc(doc(db, 'assessments', result.user.uid));
-                    
-                    if (assessmentDoc.exists()) {
-                        // Has assessment but no Yo-Yo test, go to Yo-Yo test
-                        window.location.href = '/pages/yoyo-test.html';
-                    } else {
-                        // No assessment, start with that
-                        window.location.href = '/pages/assessment.html';
-                    }
+                // Check user's assessment and test status
+                const [userDoc, assessmentDoc] = await Promise.all([
+                    getDoc(doc(db, 'users', result.user.uid)),
+                    getDoc(doc(db, 'assessments', result.user.uid))
+                ]);
+
+                // First time user - no user doc or assessment
+                if (!userDoc.exists() || !assessmentDoc.exists()) {
+                    window.location.href = '/pages/assessment.html';
+                    return;
                 }
+
+                // Has assessment but no Yo-Yo test
+                if (!userDoc.data().lastYoyoTest) {
+                    window.location.href = '/pages/yoyo-test.html';
+                    return;
+                }
+
+                // Has everything - go to dashboard
+                window.location.href = '/pages/dashboard.html';
             }
         } catch (error) {
-            showMessage('Login failed: ' + error.message, true);
             console.error('Login error:', error);
+            showMessage('Login failed: ' + error.message, true);
         } finally {
             button.classList.remove('loading');
         }
@@ -50,10 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtn?.addEventListener('click', (e) => handleSignIn(e.target));
     getStartedBtn?.addEventListener('click', (e) => handleSignIn(e.target));
 
-    // Check if user is already logged in
+    // Remove or modify the onAuthStateChanged handler to prevent automatic redirection
     auth.onAuthStateChanged(user => {
         if (user) {
-            window.location.href = '/pages/dashboard.html';
+            // Don't redirect automatically - let handleSignIn handle it
+            return;
         }
     });
 });
