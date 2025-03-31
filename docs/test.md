@@ -109,7 +109,7 @@ graph TD
 ### Security Tools Used:
 <table>
   <tr>
-    <td><img src="IMAGE_LINK_FOR_OAUTH2" width="100"/></td>
+    <td><img src="https://github.com/CoderYUI/athelete-managment/blob/00f69846e1373f0cc9f5b00d3cec3249b30869d8/docs/icons/1_vSuf2h3TCpcUuTwsMzsI_w.png" width="100"/></td>
     <td><img src="IMAGE_LINK_FOR_FIREBASE_RULES" width="100"/></td>
     <td><img src="IMAGE_LINK_FOR_ENCRYPTION" width="100"/></td>
     <td><img src="IMAGE_LINK_FOR_ACCESS_CONTROL" width="100"/></td>
